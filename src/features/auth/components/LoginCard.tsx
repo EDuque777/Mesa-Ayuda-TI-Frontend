@@ -8,12 +8,14 @@ import logoMesaAyuda from "../../../../public/img/logoMesaAyuda.png";
 export function LoginCard() {
   return (
     <div className="rounded-[20px] text-black bg-white p-10 shadow-2xl w-full flex flex-col justify-center items-center gap-7.5">
-      <div className="w-[180px]">
+      <div className="w-45">
         <Image
           src={logoMesaAyuda}
           alt="logo"
           width={500}
           height={380}
+          loading="eager"
+          fetchPriority="high"
           className="w-full h-auto object-contain"
         />
       </div>
