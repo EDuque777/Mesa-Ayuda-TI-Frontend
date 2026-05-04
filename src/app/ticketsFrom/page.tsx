@@ -36,6 +36,17 @@ export default function TicketFormPage() {
             <button type="submit" className="bg-blue-700 text-white px-6 py-2 rounded">Enviar ticket</button>
             <button type="button" className="border px-6 py-2 rounded">Cancelar</button>
           </div>
+          {/* Nuevo apartado para archivos */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Adjuntar Archivos / Captura de pantalla</label>
+            <div className="flex items-center gap-4">
+              <label className="cursor-pointer bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">
+                Explorar
+                <input type="file" className="hidden" />
+              </label>
+              <span className="text-sm text-gray-500">Ningún archivo seleccionado</span>
+            </div>
+          </div>
         </form>
       </div>
     </main>
