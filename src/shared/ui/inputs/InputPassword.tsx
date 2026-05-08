@@ -46,6 +46,7 @@ export function InputPassword({
         type={showPassword ? "text" : "password"}
         name={name}
         autoComplete={autoComplete}
+        placeholder=" "
         className="peer w-full rounded-[10px] border-2 border-black bg-white pl-10 pr-10 pt-3.75 pb-3.75 text-base text-black outline-none transition-all duration-400 ease-out focus:border-blue-600 focus:shadow-[0_5px_8px_rgba(21,93,252,0.3),0_10px_20px_rgba(21,93,252,0.2),0_15px_40px_rgba(21,93,252,0.15),0_20px_60px_rgba(21,93,252,0.1)]"
       />
 
@@ -84,7 +85,10 @@ export function InputPassword({
 
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-9 top-4 bg-white px-1.25 text-gray-500 transition-all duration-400 ease-out peer-focus:left-2.5 peer-focus:-translate-y-6.25 peer-focus:text-xs peer-focus:text-blue-600 peer-valid:left-2.5 peer-valid:-translate-y-6.25 peer-valid:text-xs peer-valid:text-blue-600"
+        className="pointer-events-none absolute left-9 top-4 bg-white px-1.25 text-gray-500 transition-all duration-400 ease-out
+  peer-focus:left-2.5 peer-focus:-translate-y-6.25 peer-focus:text-xs peer-focus:text-blue-600
+  peer-[:not(:placeholder-shown)]:left-2.5 peer-[:not(:placeholder-shown)]:-translate-y-6.25 peer-[:not(:placeholder-shown)]:text-xs
+  peer-[:not(:focus):not(:placeholder-shown)]:text-black"
       >
         {label}
       </label>

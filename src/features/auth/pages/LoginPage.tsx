@@ -24,7 +24,7 @@ export function LoginPage() {
         />
       </div>
 
-      <section className="relative z-10 w-full md:w-[60%] lg:w-[30%]">
+      <section className="relative z-10 w-full md:w-137.5">
         <GlowCard glowColor="21, 93, 252">
           <LoginCard />
         </GlowCard>

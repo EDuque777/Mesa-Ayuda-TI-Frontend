@@ -9,7 +9,6 @@ import { ImArrowUpRight2 } from "react-icons/im";
 export function LoginForm() {
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     console.log("Enviando login");
   };
   return (
@@ -23,14 +22,14 @@ export function LoginForm() {
         label="Correo electrónico"
         type="email"
         containerStyle="w-full"
-        required={true}
+        required={false}
       />
       <InputPassword
         id="password"
         name="password"
         label="Contraseña"
         containerStyle="w-full"
-        required={true}
+        required={false}
       />
       <ButtonBookmark
         type="submit"
