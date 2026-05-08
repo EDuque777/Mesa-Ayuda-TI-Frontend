@@ -37,7 +37,7 @@ export default function RootLayout({
         <ReduxProvider>
           <AppPreloader minDuration={500} />
           {children}
-          </ReduxProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

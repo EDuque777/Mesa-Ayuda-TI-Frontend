@@ -1,4 +1,4 @@
-import { LoginForm } from "./LoginForm";
+import { SignUpForm } from "./SignUpForm";
 import SplitText from "@/shared/ui/animateText/SplitText";
 import TextType from "@/shared/ui/animateText/TextType";
 import GradientText from "@/shared/ui/animateText/GradientText";
@@ -6,7 +6,7 @@ import Image from "next/image";
 import logoMesaAyuda from "../../../../public/img/logoMesaAyuda.png";
 import Link from "next/link";
 
-export function LoginCard() {
+export function SignUpCard() {
   return (
     <div className="rounded-[20px] text-black bg-white p-10 shadow-2xl w-full flex flex-col justify-center items-center gap-7.5">
       <div className="w-40">
@@ -22,7 +22,7 @@ export function LoginCard() {
       </div>
       <div className="flex flex-col w-full">
         <SplitText
-          text="Acceso al Portal"
+          text="Registro"
           className="text-[35px] md:text-[40px] font-bold text-center leading-tight"
           delay={50}
           duration={1.25}
@@ -50,25 +50,15 @@ export function LoginCard() {
           className="text-center leading-snug text-gray-500 font-semibold"
         />
       </div>
-      <LoginForm />
-      <div className="w-full flex flex-col gap-2.5 items-center justify-center">
-        <GradientText
-          colors={["#000000", "#155dfc", "#000000"]}
-          animationSpeed={8}
-          showBorder={false}
-          className="custom-class font-semibold text-center"
-        >
-          ¿Olvidaste tu Contraseña?
-        </GradientText>
-        <GradientText
-          colors={["#000000", "#155dfc", "#000000"]}
-          animationSpeed={8}
-          showBorder={false}
-          className="custom-class font-semibold text-center leading-snug"
-        >
-          <Link href="/sign-up">No Tienes Cuenta? Crea Una</Link>
-        </GradientText>
-      </div>
+      <SignUpForm />
+      <GradientText
+        colors={["#000000", "#155dfc", "#000000"]}
+        animationSpeed={8}
+        showBorder={false}
+        className="custom-class font-semibold text-center leading-snug"
+      >
+        <Link href="/">Ya Tienes una Cuenta? Inicia Sesion</Link>
+      </GradientText>
     </div>
   );
 }
