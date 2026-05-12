@@ -1,4 +1,5 @@
 export { LoginPage } from "./pages/LoginPage";
+export { RegistroPage } from "./pages/RegistroPage";
 export * from "./api/authApi";
 export * from "./hooks/useAuth";
 export * from "./hooks/useSignUp";
