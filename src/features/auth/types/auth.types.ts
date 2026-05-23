@@ -34,6 +34,10 @@ export interface VerifyCodeRequest {
   code: string;
 }
 
+export interface ResendVerificationCodeRequest {
+  email: string;
+}
+
 export interface ForgotPasswordRequest {
   email: string;
 }

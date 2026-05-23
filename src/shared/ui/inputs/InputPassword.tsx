@@ -6,13 +6,15 @@ import { motion, AnimatePresence } from "motion/react";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { PiEyeLight, PiEyeSlash } from "react-icons/pi";
 
-type InputPasswordProps = {
+type InputPasswordProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "className" | "id" | "name" | "required" | "type"
+> & {
   id: string;
   name: string;
   label: string;
-  autoComplete?: string;
-  required: boolean;
-  containerStyle: string;
+  required?: boolean;
+  containerStyle?: string;
 };
 
 const particles = [
@@ -29,8 +31,9 @@ export function InputPassword({
   name,
   label,
   autoComplete = "current-password",
-  required,
-  containerStyle,
+  required = false,
+  containerStyle = "",
+  ...inputProps
 }: InputPasswordProps) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -47,7 +50,8 @@ export function InputPassword({
         name={name}
         autoComplete={autoComplete}
         placeholder=" "
-        className="peer w-full rounded-[10px] border-2 border-black bg-white pl-10 pr-10 pt-3.75 pb-3.75 text-base text-black outline-none transition-all duration-400 ease-out focus:border-blue-600 focus:shadow-[0_5px_8px_rgba(21,93,252,0.3),0_10px_20px_rgba(21,93,252,0.2),0_15px_40px_rgba(21,93,252,0.15),0_20px_60px_rgba(21,93,252,0.1)]"
+        className="peer w-full rounded-[10px] border-2 border-black bg-white pl-10 pr-10 pt-3.75 pb-3.75 text-base text-black outline-none transition-all duration-400 ease-out focus:border-blue-600 focus:shadow-[0_5px_8px_rgba(21,93,252,0.3),0_10px_20px_rgba(21,93,252,0.2),0_15px_40px_rgba(21,93,252,0.15),0_20px_60px_rgba(21,93,252,0.1)] disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+        {...inputProps}
       />
 
       <RiLockPasswordLine className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-[20px] text-gray-500 transition-colors duration-300 peer-focus:text-blue-600" />
@@ -56,6 +60,7 @@ export function InputPassword({
         type="button"
         aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
         onClick={togglePasswordVisibility}
+        disabled={inputProps.disabled}
         className="absolute right-4 top-1/2 z-10 flex -translate-y-1/2 items-center justify-center text-[25px] text-gray-500 outline-none transition-colors duration-300 hover:text-blue-600 focus:text-blue-600 cursor-pointer"
       >
         <AnimatePresence mode="wait" initial={false}>

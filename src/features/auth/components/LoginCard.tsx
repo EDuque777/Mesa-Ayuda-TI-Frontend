@@ -1,29 +1,35 @@
-import { LoginForm } from "./LoginForm";
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import logoMesaAyuda from "../../../../public/img/logoMesaAyuda.png";
+import GradientText from "@/shared/ui/animateText/GradientText";
 import SplitText from "@/shared/ui/animateText/SplitText";
 import TextType from "@/shared/ui/animateText/TextType";
-import GradientText from "@/shared/ui/animateText/GradientText";
-import Image from "next/image";
-import logoMesaAyuda from "../../../../public/img/logoMesaAyuda.png";
-import Link from "next/link";
+import { ForgotPasswordModal } from "./ForgotPasswordModal";
+import { LoginForm } from "./LoginForm";
 
 export function LoginCard() {
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+
   return (
-    <div className="rounded-[20px] text-black bg-white p-10 shadow-2xl w-full flex flex-col justify-center items-center gap-7.5">
+    <div className="flex w-full flex-col items-center justify-center gap-7.5 rounded-[20px] bg-white p-10 text-black shadow-2xl">
       <div className="w-40">
         <Image
           src={logoMesaAyuda}
-          alt="logo"
+          alt="Logo Mesa de Ayuda"
           width={500}
           height={380}
           loading="eager"
           fetchPriority="high"
-          className="w-full h-auto object-contain"
+          className="h-auto w-full object-contain"
         />
       </div>
-      <div className="flex flex-col w-full">
+      <div className="flex w-full flex-col">
         <SplitText
           text="Acceso al Portal"
-          className="text-[35px] md:text-[40px] font-bold text-center leading-tight"
+          className="text-center text-[35px] font-bold leading-tight md:text-[40px]"
           delay={50}
           duration={1.25}
           ease="power3.out"
@@ -47,28 +53,39 @@ export function LoginCard() {
           deletingSpeed={50}
           variableSpeed={{ min: 60, max: 120 }}
           cursorBlinkDuration={0.5}
-          className="text-center leading-snug text-gray-500 font-semibold"
+          className="text-center font-semibold leading-snug text-gray-500"
         />
       </div>
       <LoginForm />
-      <div className="w-full flex flex-col gap-2.5 items-center justify-center">
+      <div className="flex w-full flex-col items-center justify-center gap-2.5">
         <GradientText
           colors={["#000000", "#155dfc", "#000000"]}
           animationSpeed={8}
           showBorder={false}
-          className="custom-class font-semibold text-center"
+          className="custom-class text-center font-semibold"
         >
-          ¿Olvidaste tu Contraseña?
+          <button
+            type="button"
+            onClick={() => setIsForgotPasswordOpen(true)}
+            className="cursor-pointer"
+          >
+            ¿Olvidaste tu contraseña?
+          </button>
         </GradientText>
         <GradientText
           colors={["#000000", "#155dfc", "#000000"]}
           animationSpeed={8}
           showBorder={false}
-          className="custom-class font-semibold text-center leading-snug"
+          className="custom-class text-center font-semibold leading-snug"
         >
-          <Link href="/sign-up">No Tienes Cuenta? Crea Una</Link>
+          <Link href="/sign-up">¿No tienes cuenta? Crea una</Link>
         </GradientText>
       </div>
+
+      <ForgotPasswordModal
+        open={isForgotPasswordOpen}
+        onClose={() => setIsForgotPasswordOpen(false)}
+      />
     </div>
   );
 }

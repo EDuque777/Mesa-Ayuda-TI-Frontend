@@ -1,10 +1,12 @@
 import { LoginCard } from "../components/LoginCard";
+import { AuthBackendStatus } from "../components/AuthBackendStatus";
 import { ColorBends } from "@/shared/ui/backgrounds/ColorBends";
 import { GlowCard } from "@/shared/ui/glowCard/GlowCard";
 
 export function LoginPage() {
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white px-4">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white p-1 md:p-10">
+      <AuthBackendStatus />
       <div className="absolute inset-0 z-0">
         <ColorBends
           colors={["#155dfc", "#155dfc", "#155dfc"]}

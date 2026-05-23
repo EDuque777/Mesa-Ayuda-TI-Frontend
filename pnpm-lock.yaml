@@ -35,6 +35,9 @@ importers:
       react-redux:
         specifier: ^9.2.0
         version: 9.2.0(@types/react@19.2.14)(react@19.2.4)(redux@5.0.1)
+      sileo:
+        specifier: ^0.1.5
+        version: 0.1.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       three:
         specifier: ^0.184.0
         version: 0.184.0
@@ -1910,6 +1913,12 @@ packages:
   side-channel@1.1.0:
     resolution: {integrity: sha512-ZX99e6tRweoUXqR+VBrslhda51Nh5MTQwou5tnUDgbtyM0dBgmhEDtWGP/xbKn6hqfPRHujUNwz5fy/wbbhnpw==}
     engines: {node: '>= 0.4'}
+
+  sileo@0.1.5:
+    resolution: {integrity: sha512-Fc/3VNFWgQlZttkyvAdnPlzWrLTaii6FIas7nMivlx3uGuKpuNNRZGtSgNRFqTHFn70ZxEjKYxsBIO0nQlDGAg==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -4056,6 +4065,14 @@ snapshots:
       side-channel-list: 1.0.1
       side-channel-map: 1.0.1
       side-channel-weakmap: 1.0.2
+
+  sileo@0.1.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      motion: 12.38.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+    transitivePeerDependencies:
+      - '@emotion/is-prop-valid'
 
   source-map-js@1.2.1: {}
 

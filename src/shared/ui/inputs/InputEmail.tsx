@@ -2,14 +2,16 @@ import React from "react";
 import "./inputs.css";
 import { MdAlternateEmail } from "react-icons/md";
 
-type InputEmailProps = {
+type InputEmailProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "className" | "id" | "name" | "required" | "type"
+> & {
   id: string;
   name: string;
   label: string;
-  type: "email";
-  autoComplete?: string;
-  required: boolean;
-  containerStyle: string;
+  type?: "email";
+  required?: boolean;
+  containerStyle?: string;
 };
 
 const particles = [
@@ -25,10 +27,11 @@ export function InputEmail({
   id,
   name,
   label,
-  type,
+  type = "email",
   autoComplete = "email",
-  required,
-  containerStyle,
+  required = false,
+  containerStyle = "",
+  ...inputProps
 }: InputEmailProps) {
   return (
     <div className={`relative ${containerStyle}`}>
@@ -39,7 +42,8 @@ export function InputEmail({
         name={name}
         autoComplete={autoComplete}
         placeholder=" "
-        className="peer w-full rounded-[10px] border-2 border-black bg-white pl-10 pr-3.75 pt-3.75 pb-3.75 text-base text-black outline-none transition-all duration-400 ease-out focus:border-blue-600 focus:shadow-[0_5px_8px_rgba(21,93,252,0.3),0_10px_20px_rgba(21,93,252,0.2),0_15px_40px_rgba(21,93,252,0.15),0_20px_60px_rgba(21,93,252,0.1)]"
+        className="peer w-full rounded-[10px] border-2 border-black bg-white pl-10 pr-3.75 pt-3.75 pb-3.75 text-base text-black outline-none transition-all duration-400 ease-out focus:border-blue-600 focus:shadow-[0_5px_8px_rgba(21,93,252,0.3),0_10px_20px_rgba(21,93,252,0.2),0_15px_40px_rgba(21,93,252,0.15),0_20px_60px_rgba(21,93,252,0.1)] disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+        {...inputProps}
       />
 
       <MdAlternateEmail className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-[20px] text-gray-500 transition-colors duration-300 peer-focus:text-blue-600" />

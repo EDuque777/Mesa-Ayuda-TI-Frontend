@@ -1,29 +1,29 @@
-import { SignUpForm } from "./SignUpForm";
+import Image from "next/image";
+import Link from "next/link";
+import logoMesaAyuda from "../../../../public/img/logoMesaAyuda.png";
+import GradientText from "@/shared/ui/animateText/GradientText";
 import SplitText from "@/shared/ui/animateText/SplitText";
 import TextType from "@/shared/ui/animateText/TextType";
-import GradientText from "@/shared/ui/animateText/GradientText";
-import Image from "next/image";
-import logoMesaAyuda from "../../../../public/img/logoMesaAyuda.png";
-import Link from "next/link";
+import { SignUpForm } from "./SignUpForm";
 
 export function SignUpCard() {
   return (
-    <div className="rounded-[20px] text-black bg-white p-10 shadow-2xl w-full flex flex-col justify-center items-center gap-7.5">
+    <div className="flex w-full flex-col items-center justify-center gap-7.5 rounded-[20px] bg-white p-10 text-black shadow-2xl">
       <div className="w-40">
         <Image
           src={logoMesaAyuda}
-          alt="logo"
+          alt="Logo Mesa de Ayuda"
           width={500}
           height={380}
           loading="eager"
           fetchPriority="high"
-          className="w-full h-auto object-contain"
+          className="h-auto w-full object-contain"
         />
       </div>
-      <div className="flex flex-col w-full">
+      <div className="flex w-full flex-col">
         <SplitText
           text="Registro"
-          className="text-[35px] md:text-[40px] font-bold text-center leading-tight"
+          className="text-center text-[35px] font-bold leading-tight md:text-[40px]"
           delay={50}
           duration={1.25}
           ease="power3.out"
@@ -47,7 +47,7 @@ export function SignUpCard() {
           deletingSpeed={50}
           variableSpeed={{ min: 60, max: 120 }}
           cursorBlinkDuration={0.5}
-          className="text-center leading-snug text-gray-500 font-semibold"
+          className="text-center font-semibold leading-snug text-gray-500"
         />
       </div>
       <SignUpForm />
@@ -55,9 +55,9 @@ export function SignUpCard() {
         colors={["#000000", "#155dfc", "#000000"]}
         animationSpeed={8}
         showBorder={false}
-        className="custom-class font-semibold text-center leading-snug"
+        className="custom-class text-center font-semibold leading-snug"
       >
-        <Link href="/">Ya Tienes una Cuenta? Inicia Sesion</Link>
+        <Link href="/">¿Ya tienes una cuenta? Inicia sesión</Link>
       </GradientText>
     </div>
   );

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Manrope } from "next/font/google";
 import { ReduxProvider } from "./providers/ReduxProvider";
 import { AppPreloader } from "@/shared/ui/loaders/AppPreloader";
+import { AppToaster } from "@/shared/ui/toasts/AppToaster";
+import "sileo/styles.css";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,12 +32,13 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es"
       className={`${geistSans.variable} ${geistMono.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-manrope">
         <ReduxProvider>
           <AppPreloader minDuration={500} />
+          <AppToaster />
           {children}
         </ReduxProvider>
       </body>

@@ -7,6 +7,7 @@ export * from "./hooks/useSignIn";
 export * from "./hooks/useVerifySignUpCode";
 export * from "./hooks/useVerifyEmail";
 export * from "./hooks/useVerifySignInCode";
+export * from "./hooks/useResendVerificationCode";
 export * from "./hooks/useRefreshToken";
 export * from "./hooks/useLogOut";
 export * from "./hooks/useForgotPassword";
