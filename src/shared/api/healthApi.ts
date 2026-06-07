@@ -10,7 +10,9 @@ export const healthApi = baseApi.injectEndpoints({
       query: () => ({
         url: "/",
         method: "GET",
+        responseHandler: "text",
       }),
+      transformResponse: (message: string) => ({ message }),
     }),
   }),
   overrideExisting: false,

@@ -8,7 +8,6 @@ import { InputEmail } from "@/shared/ui/inputs/InputEmail";
 import { InputPassword } from "@/shared/ui/inputs/InputPassword";
 import { InputText } from "@/shared/ui/inputs/InputText";
 import { getApiErrorMessage } from "@/shared/lib/apiErrors";
-import { waitForSileoToClose } from "@/shared/ui/toasts/notify";
 import { useResendVerificationCode } from "../hooks/useResendVerificationCode";
 import { useSignUp } from "../hooks/useSignUp";
 import { useVerifySignUpCode } from "../hooks/useVerifySignUpCode";
@@ -16,6 +15,7 @@ import {
   isEmailVerificationPendingError,
   notifyAuthError,
   notifyAuthSuccess,
+  notifyAuthSuccessAndWait,
   notifyEmailVerificationPending,
 } from "../lib/authNotifications";
 import {
@@ -164,8 +164,7 @@ export function SignUpForm() {
       code,
     });
 
-    notifyAuthSuccess("signUpVerified");
-    await waitForSileoToClose();
+    await notifyAuthSuccessAndWait("signUpVerified");
     setIsVerificationOpen(false);
     setForm(INITIAL_FORM_STATE);
     router.replace("/home");

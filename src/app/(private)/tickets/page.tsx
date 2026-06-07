@@ -1,5 +1,5 @@
-export default function TicketsPage() {
-  return (
-    <h1>Tickets</h1>
-  );
+import { TicketsPage } from "@/features/tickets";
+
+export default function TicketsRoutePage() {
+  return <TicketsPage />;
 }

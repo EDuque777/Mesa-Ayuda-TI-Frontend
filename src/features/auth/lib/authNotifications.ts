@@ -4,6 +4,7 @@ import {
   notifyAction,
   notifyError,
   notifySuccess,
+  notifySuccessAndWait,
   notifyWarning,
 } from "@/shared/ui/toasts/notify";
 
@@ -40,8 +41,7 @@ const SUCCESS_TOASTS: Record<AuthSuccessContext, AuthToastCopy> = {
   },
   signInVerified: {
     title: "Inicio de sesión confirmado",
-    description:
-      "Validamos tu código correctamente. Te llevaremos al inicio en unos segundos.",
+    description: "Validamos tu código correctamente.",
   },
   signUpCreated: {
     title: "Registro creado correctamente",
@@ -50,8 +50,7 @@ const SUCCESS_TOASTS: Record<AuthSuccessContext, AuthToastCopy> = {
   },
   signUpVerified: {
     title: "Cuenta verificada",
-    description:
-      "Tu correo fue confirmado correctamente. Te llevaremos al inicio en unos segundos.",
+    description: "Tu correo fue confirmado correctamente.",
   },
   verificationCodeResent: {
     title: "Código de verificación enviado",
@@ -70,81 +69,118 @@ const SUCCESS_TOASTS: Record<AuthSuccessContext, AuthToastCopy> = {
   },
   loggedOut: {
     title: "Sesión cerrada",
-    description:
-      "Cerraste sesión correctamente. Te llevaremos al inicio de sesión en unos segundos.",
+    description: "Cerraste sesión correctamente.",
   },
 };
 
 const CONTEXT_FALLBACKS: Record<AuthErrorContext, AuthToastCopy> = {
   signIn: {
-    title: "Problema al iniciar sesión",
+    title: "No se pudo iniciar sesión",
     description:
-      "No pudimos validar tus credenciales. Revisa tu correo y contraseña e intenta nuevamente.",
+      "Revisa tu correo y contraseña antes de intentarlo nuevamente.",
   },
   signUp: {
-    title: "Problema al crear la cuenta",
+    title: "No se pudo crear la cuenta",
     description:
       "Revisa los datos del formulario y vuelve a intentar el registro.",
   },
   verifySignInCode: {
-    title: "Problema al verificar el acceso",
+    title: "No se pudo verificar el acceso",
     description:
       "Revisa el código de seguridad enviado a tu correo e intenta nuevamente.",
   },
   verifySignUpCode: {
-    title: "Problema al verificar la cuenta",
+    title: "No se pudo verificar la cuenta",
     description:
       "Revisa el código de seguridad enviado a tu correo e intenta nuevamente.",
   },
   resendVerificationCode: {
-    title: "Problema al reenviar el código",
+    title: "No se pudo reenviar el código",
     description:
       "No pudimos generar un nuevo código de verificación. Intenta nuevamente.",
   },
   forgotPassword: {
-    title: "Problema al solicitar el código",
+    title: "No se pudo solicitar el código",
     description:
       "Revisa que el correo tenga un formato válido e intenta nuevamente.",
   },
   resetPassword: {
-    title: "Problema al restablecer la contraseña",
+    title: "No se pudo restablecer la contraseña",
     description:
       "Revisa el código y las contraseñas ingresadas antes de intentarlo otra vez.",
   },
   logOut: {
-    title: "Problema al cerrar sesión",
+    title: "No se pudo cerrar sesión",
     description:
-      "No pudimos confirmar el cierre con el servidor, pero limpiaremos la sesión local.",
+      "No pudimos confirmar el cierre con el servidor. Intenta nuevamente.",
   },
 };
 
-const BUSINESS_ERROR_TOASTS: Record<string, AuthToastCopy> = {
+const AUTH_ERROR_TOASTS: Record<string, AuthToastCopy> = {
   "Invalid credentials": {
-    title: "Problema al iniciar sesión",
-    description:
-      "Revisa que tu correo y contraseña sean correctos antes de intentarlo nuevamente.",
+    title: "Credenciales incorrectas",
+    description: "El correo o la contraseña no son correctos.",
   },
-  "Email not verified": {
-    title: "Correo pendiente de verificación",
-    description:
-      "Verifica tu correo electrónico antes de iniciar sesión en el portal.",
+  "El correo o la contrasena no son correctos.": {
+    title: "Credenciales incorrectas",
+    description: "El correo o la contraseña no son correctos.",
+  },
+  "Passwords do not match": {
+    title: "Contraseñas diferentes",
+    description: "Confirma que ambos campos tengan la misma contraseña.",
+  },
+  "Las contrasenas no coinciden.": {
+    title: "Contraseñas diferentes",
+    description: "Confirma que ambos campos tengan la misma contraseña.",
+  },
+  "Las contraseñas no coinciden.": {
+    title: "Contraseñas diferentes",
+    description: "Confirma que ambos campos tengan la misma contraseña.",
   },
   "Email pending verification": {
     title: "Cuenta pendiente de verificación",
     description:
-      "Esta cuenta todavía no ha sido verificada. Termina la verificación para poder ingresar.",
+      "Termina la verificación de tu cuenta para poder ingresar.",
+  },
+  "La cuenta esta pendiente de verificacion. Termina la verificacion para poder ingresar.": {
+    title: "Cuenta pendiente de verificación",
+    description:
+      "Termina la verificación de tu cuenta para poder ingresar.",
   },
   "Email already registered": {
     title: "Correo ya registrado",
     description:
-      "Este correo ya tiene una cuenta. Inicia sesión o usa un correo diferente.",
+      "Este correo ya tiene una cuenta. Inicia sesión o usa otro correo.",
   },
-  "Passwords do not match": {
-    title: "Contraseñas diferentes",
+  "Este correo ya esta registrado. Inicia sesion o usa otro correo.": {
+    title: "Correo ya registrado",
     description:
-      "Confirma que ambos campos tengan exactamente la misma contraseña.",
+      "Este correo ya tiene una cuenta. Inicia sesión o usa otro correo.",
+  },
+  "Error sending verification email": {
+    title: "No pudimos enviar el correo",
+    description:
+      "Hubo un problema enviando el código de seguridad. Intenta nuevamente en unos minutos.",
+  },
+  "No pudimos enviar el correo de verificacion. Intenta nuevamente en unos minutos.": {
+    title: "No pudimos enviar el correo",
+    description:
+      "Hubo un problema enviando el código de seguridad. Intenta nuevamente en unos minutos.",
+  },
+  "Email not verified": {
+    title: "Correo pendiente de verificación",
+    description: "Verifica tu correo electrónico antes de iniciar sesión.",
+  },
+  "El correo todavia no esta verificado.": {
+    title: "Correo pendiente de verificación",
+    description: "Verifica tu correo electrónico antes de iniciar sesión.",
   },
   "Invalid verification data": {
+    title: "Datos de verificación inválidos",
+    description:
+      "Revisa el correo y el código de seguridad antes de continuar.",
+  },
+  "Los datos de verificacion no son validos.": {
     title: "Datos de verificación inválidos",
     description:
       "Revisa el correo y el código de seguridad antes de continuar.",
@@ -154,127 +190,143 @@ const BUSINESS_ERROR_TOASTS: Record<string, AuthToastCopy> = {
     description:
       "Tu cuenta ya estaba confirmada. Puedes iniciar sesión con normalidad.",
   },
+  "Este correo ya esta verificado.": {
+    title: "Correo ya verificado",
+    description:
+      "Tu cuenta ya estaba confirmada. Puedes iniciar sesión con normalidad.",
+  },
   "Verification code not found": {
     title: "Código no encontrado",
-    description:
-      "Solicita un nuevo código y usa el más reciente que llegue a tu correo.",
+    description: "Solicita un nuevo código y usa el más reciente.",
   },
-  "Invalid verification code": {
-    title: "Código incorrecto",
-    description:
-      "Revisa los 6 dígitos del código de seguridad e intenta nuevamente.",
+  "No encontramos un codigo de verificacion activo.": {
+    title: "Código no encontrado",
+    description: "Solicita un nuevo código y usa el más reciente.",
   },
   "Verification code expired": {
     title: "Código expirado",
-    description:
-      "El código ya no está vigente. Solicita uno nuevo para continuar.",
+    description: "Solicita un nuevo código de verificación para continuar.",
+  },
+  "El codigo de verificacion expiro.": {
+    title: "Código expirado",
+    description: "Solicita un nuevo código de verificación para continuar.",
+  },
+  "Invalid verification code": {
+    title: "Código incorrecto",
+    description: "Revisa los 6 dígitos del código e intenta nuevamente.",
+  },
+  "El codigo de verificacion no es correcto.": {
+    title: "Código incorrecto",
+    description: "Revisa los 6 dígitos del código e intenta nuevamente.",
   },
   "Refresh token not found": {
     title: "Sesión no activa",
-    description:
-      "Inicia sesión nuevamente para acceder de forma segura al portal.",
+    description: "Inicia sesión nuevamente para continuar.",
+  },
+  "No encontramos una sesion activa.": {
+    title: "Sesión no activa",
+    description: "Inicia sesión nuevamente para continuar.",
   },
   "Invalid refresh token": {
     title: "Sesión expirada",
-    description:
-      "Tu sesión ya no es válida. Inicia sesión nuevamente para continuar.",
+    description: "Tu sesión ya no es válida. Inicia sesión nuevamente.",
   },
-  "Error sending verification email": {
-    title: "No pudimos enviar el correo",
-    description:
-      "Hubo un problema enviando el código de seguridad. Intenta nuevamente en unos minutos.",
+  "La sesion expiro o ya no es valida.": {
+    title: "Sesión expirada",
+    description: "Tu sesión ya no es válida. Inicia sesión nuevamente.",
   },
-};
-
-const VALIDATION_ERROR_TOASTS: Record<string, AuthToastCopy> = {
+  "Access token is required": {
+    title: "Sesión requerida",
+    description: "Debes iniciar sesión para continuar.",
+  },
+  "Debes iniciar sesion para continuar.": {
+    title: "Sesión requerida",
+    description: "Debes iniciar sesión para continuar.",
+  },
+  "Invalid access token": {
+    title: "Sesión inválida",
+    description: "Tu sesión no es válida. Inicia sesión nuevamente.",
+  },
+  "Tu sesion no es valida. Inicia sesion nuevamente.": {
+    title: "Sesión inválida",
+    description: "Tu sesión no es válida. Inicia sesión nuevamente.",
+  },
+  "Authenticated user is required": {
+    title: "Usuario no autenticado",
+    description:
+      "No pudimos identificar al usuario autenticado. Inicia sesión nuevamente.",
+  },
+  "No pudimos identificar al usuario autenticado. Inicia sesion nuevamente.": {
+    title: "Usuario no autenticado",
+    description:
+      "No pudimos identificar al usuario autenticado. Inicia sesión nuevamente.",
+  },
+  "The user does not exist.": {
+    title: "Usuario no encontrado",
+    description: "El usuario no existe.",
+  },
+  "User does not exist": {
+    title: "Usuario no encontrado",
+    description: "El usuario no existe.",
+  },
+  "User not found": {
+    title: "Usuario no encontrado",
+    description: "El usuario no existe.",
+  },
   "Ingresa tu correo y contraseña.": {
     title: "Campos incompletos",
-    description:
-      "Ingresa tu correo electrónico y contraseña para iniciar sesión.",
+    description: "Ingresa tu correo y contraseña.",
   },
   "Completa todos los campos para crear la cuenta.": {
     title: "Campos incompletos",
-    description:
-      "Completa la información requerida para crear tu cuenta.",
-  },
-  "Las contraseñas no coinciden.": {
-    title: "Contraseñas diferentes",
-    description:
-      "Confirma que ambos campos tengan exactamente la misma contraseña.",
+    description: "Completa todos los campos para crear la cuenta.",
   },
   "El código debe tener 6 dígitos.": {
     title: "Código incompleto",
-    description:
-      "Ingresa los 6 dígitos del código de seguridad enviado a tu correo.",
+    description: "El código debe tener 6 dígitos.",
   },
 };
 
 const normalizeErrorMessage = (message: string) => message.trim();
 
-const includes = (message: string, searchValue: string) =>
-  normalizeErrorMessage(message).toLowerCase().includes(searchValue);
+const getAuthErrorToast = (
+  context: AuthErrorContext,
+  message: string,
+): AuthToastCopy => {
+  const normalizedMessage = normalizeErrorMessage(message);
+
+  if (!normalizedMessage) {
+    return CONTEXT_FALLBACKS[context];
+  }
+
+  return (
+    AUTH_ERROR_TOASTS[normalizedMessage] ?? {
+      title: CONTEXT_FALLBACKS[context].title,
+      description: normalizedMessage,
+    }
+  );
+};
 
 export const isEmailVerificationPendingError = (message: string) => {
   const normalizedMessage = normalizeErrorMessage(message);
 
   return (
     normalizedMessage === "Email not verified" ||
-    normalizedMessage === "Email pending verification"
+    normalizedMessage === "Email pending verification" ||
+    normalizedMessage === "El correo todavia no esta verificado." ||
+    normalizedMessage ===
+      "La cuenta esta pendiente de verificacion. Termina la verificacion para poder ingresar."
   );
-};
-
-export const getAuthErrorToast = (
-  context: AuthErrorContext,
-  message: string,
-): AuthToastCopy => {
-  const normalizedMessage = normalizeErrorMessage(message);
-
-  if (BUSINESS_ERROR_TOASTS[normalizedMessage]) {
-    return BUSINESS_ERROR_TOASTS[normalizedMessage];
-  }
-
-  if (VALIDATION_ERROR_TOASTS[normalizedMessage]) {
-    return VALIDATION_ERROR_TOASTS[normalizedMessage];
-  }
-
-  if (includes(normalizedMessage, "correo válido")) {
-    return {
-      title: "Correo no válido",
-      description:
-        "Revisa que el correo tenga un formato válido antes de continuar.",
-    };
-  }
-
-  if (includes(normalizedMessage, "máximo") || includes(normalizedMessage, "max")) {
-    return {
-      title: "Información demasiado extensa",
-      description:
-        "Revisa la longitud de los campos y ajusta la información solicitada.",
-    };
-  }
-
-  if (includes(normalizedMessage, "contraseña todavía no cumple")) {
-    return {
-      title: "Contraseña no válida",
-      description:
-        "Asegúrate de incluir mayúscula, minúscula, número, carácter especial y entre 8 y 72 caracteres.",
-    };
-  }
-
-  if (includes(normalizedMessage, "email must be an email")) {
-    return {
-      title: "Correo no válido",
-      description:
-        "Ingresa un correo electrónico válido para continuar.",
-    };
-  }
-
-  return CONTEXT_FALLBACKS[context];
 };
 
 export const notifyAuthSuccess = (context: AuthSuccessContext) => {
   const toast = SUCCESS_TOASTS[context];
-  notifySuccess(toast.description, toast.title);
+  return notifySuccess(toast.description, toast.title);
+};
+
+export const notifyAuthSuccessAndWait = (context: AuthSuccessContext) => {
+  const toast = SUCCESS_TOASTS[context];
+  return notifySuccessAndWait(toast.description, toast.title);
 };
 
 export const notifyAuthError = (
@@ -289,15 +341,15 @@ export const notifyEmailVerificationPending = (onConfirm: () => void) => {
   notifyAction({
     title: "Cuenta pendiente de verificación",
     description:
-      "Esta cuenta todavía no ha sido verificada. Para ingresar, termina la verificación con un nuevo código.",
-    buttonTitle: "Terminar de verificar",
+      "Esta cuenta todavía no ha sido verificada. Termina la verificación con un nuevo código para poder ingresar.",
+    buttonTitle: "Verificar cuenta",
     onClick: onConfirm,
   });
 };
 
 export const notifySessionWarning = () => {
   notifyWarning(
-    "Inicia sesión nuevamente para acceder de forma segura al portal.",
+    "Inicia sesión nuevamente para acceder de forma segura.",
     "Sesión no activa",
   );
 };

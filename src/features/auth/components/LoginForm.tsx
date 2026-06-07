@@ -7,7 +7,6 @@ import { ButtonBookmark } from "@/shared/ui/buttons/ButtonBookmark";
 import { InputEmail } from "@/shared/ui/inputs/InputEmail";
 import { InputPassword } from "@/shared/ui/inputs/InputPassword";
 import { getApiErrorMessage } from "@/shared/lib/apiErrors";
-import { waitForSileoToClose } from "@/shared/ui/toasts/notify";
 import { useResendVerificationCode } from "../hooks/useResendVerificationCode";
 import { useSignIn } from "../hooks/useSignIn";
 import { useVerifyEmail } from "../hooks/useVerifyEmail";
@@ -16,6 +15,7 @@ import {
   isEmailVerificationPendingError,
   notifyAuthError,
   notifyAuthSuccess,
+  notifyAuthSuccessAndWait,
   notifyEmailVerificationPending,
 } from "../lib/authNotifications";
 import { EMAIL_MAX_LENGTH, isValidEmail } from "../lib/authValidation";
@@ -137,17 +137,16 @@ export function LoginForm() {
         code,
       });
 
-      notifyAuthSuccess("signUpVerified");
+      await notifyAuthSuccessAndWait("signUpVerified");
     } else {
       await verifySignInCode({
         email: verificationEmail,
         code,
       });
 
-      notifyAuthSuccess("signInVerified");
+      await notifyAuthSuccessAndWait("signInVerified");
     }
 
-    await waitForSileoToClose();
     setIsVerificationOpen(false);
     setForm(INITIAL_FORM_STATE);
     router.replace("/home");

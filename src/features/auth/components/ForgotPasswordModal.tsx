@@ -10,10 +10,13 @@ import { InputEmail } from "@/shared/ui/inputs/InputEmail";
 import { InputPassword } from "@/shared/ui/inputs/InputPassword";
 import { InputText } from "@/shared/ui/inputs/InputText";
 import { getApiErrorMessage } from "@/shared/lib/apiErrors";
-import { waitForSileoToClose } from "@/shared/ui/toasts/notify";
 import { useForgotPassword } from "../hooks/useForgotPassword";
 import { useResetPassword } from "../hooks/useResetPassword";
-import { notifyAuthError, notifyAuthSuccess } from "../lib/authNotifications";
+import {
+  notifyAuthError,
+  notifyAuthSuccess,
+  notifyAuthSuccessAndWait,
+} from "../lib/authNotifications";
 import {
   EMAIL_MAX_LENGTH,
   isSixDigitCode,
@@ -157,12 +160,11 @@ export function ForgotPasswordModal({
         confirmPassword: form.confirmPassword,
       });
 
-      notifyAuthSuccess("passwordReset");
       setIsWaitingForSuccessAlert(true);
-      await waitForSileoToClose();
+      await notifyAuthSuccessAndWait("passwordReset");
       resetModalState();
-      onClose();
       setIsWaitingForSuccessAlert(false);
+      onClose();
     } catch (requestError) {
       setIsWaitingForSuccessAlert(false);
       const message = getApiErrorMessage(requestError);

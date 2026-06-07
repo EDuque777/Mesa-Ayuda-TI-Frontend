@@ -42,7 +42,7 @@ export function InputText({
         name={name}
         autoComplete={autoComplete}
         placeholder=" "
-        className="peer w-full rounded-[10px] border-2 border-black bg-white pl-10 pr-3.75 pt-3.75 pb-3.75 text-base text-black outline-none transition-all duration-400 ease-out focus:border-blue-600 focus:shadow-[0_5px_8px_rgba(21,93,252,0.3),0_10px_20px_rgba(21,93,252,0.2),0_15px_40px_rgba(21,93,252,0.15),0_20px_60px_rgba(21,93,252,0.1)] disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+        className="peer h-13 w-full rounded-[10px] border-2 border-black bg-white py-0 pl-10 pr-3.75 text-base leading-[3.25rem] text-black outline-none transition-all duration-400 ease-out focus:border-blue-600 focus:shadow-[0_5px_8px_rgba(21,93,252,0.3),0_10px_20px_rgba(21,93,252,0.2),0_15px_40px_rgba(21,93,252,0.15),0_20px_60px_rgba(21,93,252,0.1)] disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
         {...inputProps}
       />
 
@@ -50,9 +50,9 @@ export function InputText({
 
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-9 top-4 bg-white px-1.25 text-gray-500 transition-all duration-400 ease-out
-  peer-focus:left-2.5 peer-focus:-translate-y-6.25 peer-focus:text-xs peer-focus:text-blue-600
-  peer-[:not(:placeholder-shown)]:left-2.5 peer-[:not(:placeholder-shown)]:-translate-y-6.25 peer-[:not(:placeholder-shown)]:text-xs
+        className="pointer-events-none absolute left-9 top-1/2 -translate-y-1/2 bg-white px-1.25 text-gray-500 transition-all duration-400 ease-out
+  peer-focus:left-2.5 peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:text-xs peer-focus:text-blue-600
+  peer-[:not(:placeholder-shown)]:left-2.5 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:-translate-y-1/2 peer-[:not(:placeholder-shown)]:text-xs
   peer-[:not(:focus):not(:placeholder-shown)]:text-black"
       >
         {label}

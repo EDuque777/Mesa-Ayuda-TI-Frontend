@@ -17,10 +17,9 @@ import logoMesaAyuda from "../../../../public/img/logoMesaAyuda.png";
 import { useAuth, useLogOut } from "@/features/auth";
 import {
   notifyAuthError,
-  notifyAuthSuccess,
+  notifyAuthSuccessAndWait,
 } from "@/features/auth/lib/authNotifications";
 import { getApiErrorMessage } from "@/shared/lib/apiErrors";
-import { waitForSileoToClose } from "@/shared/ui/toasts/notify";
 
 type PrivateSidebarLayoutProps = {
   children: ReactNode;
@@ -85,18 +84,16 @@ export function PrivateSidebarLayout({ children }: PrivateSidebarLayoutProps) {
   const handleLogOut = async () => {
     try {
       await logOut();
-      notifyAuthSuccess("loggedOut");
-    } catch (error) {
+      await notifyAuthSuccessAndWait("loggedOut");
+      router.replace("/");
       clearAuthCredentials();
+    } catch (error) {
       notifyAuthError("logOut", getApiErrorMessage(error));
     }
-
-    await waitForSileoToClose();
-    router.replace("/");
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50 text-black">
+    <div className="relative flex min-h-screen overflow-x-hidden bg-transparent text-black">
       {!isCollapsed && (
         <button
           type="button"
@@ -224,8 +221,10 @@ export function PrivateSidebarLayout({ children }: PrivateSidebarLayoutProps) {
         </div>
       </aside>
 
-      <div className="w-22 shrink-0" aria-hidden="true" />
-      <main className="min-w-0 flex-1 overflow-x-hidden">{children}</main>
+      <div className="relative z-10 w-22 shrink-0" aria-hidden="true" />
+      <main className="relative z-10 min-w-0 flex-1 overflow-x-hidden">
+        {children}
+      </main>
     </div>
   );
 }

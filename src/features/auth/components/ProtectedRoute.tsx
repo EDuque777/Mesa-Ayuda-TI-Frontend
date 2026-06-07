@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../hooks/useAuth";
 import { useRefreshToken } from "../hooks/useRefreshToken";
+import { notifySessionWarning } from "../lib/authNotifications";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -12,13 +13,23 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter();
   const hasStartedSessionCheck = useRef(false);
-  const { isAuthenticated, clearAuthCredentials } = useAuth();
+  const { isAuthenticated, authStatus, clearAuthCredentials } = useAuth();
   const { refreshToken } = useRefreshToken();
   const [hasCheckedSession, setHasCheckedSession] = useState(false);
-  const isCheckingSession = !isAuthenticated && !hasCheckedSession;
+  const isCheckingSession =
+    authStatus === "idle" && !isAuthenticated && !hasCheckedSession;
 
   useEffect(() => {
     if (isAuthenticated) {
+      return;
+    }
+
+    if (authStatus === "unauthenticated") {
+      router.replace("/");
+      return;
+    }
+
+    if (authStatus !== "idle") {
       return;
     }
 
@@ -34,6 +45,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
         await refreshToken();
       } catch {
         clearAuthCredentials();
+        notifySessionWarning();
 
         if (isMounted) {
           router.replace("/");
@@ -52,6 +64,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     };
   }, [
     clearAuthCredentials,
+    authStatus,
     isAuthenticated,
     refreshToken,
     router,
