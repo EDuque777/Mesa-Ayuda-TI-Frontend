@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, type DragEvent } from "react";
 import { FiArrowRight, FiExternalLink } from "react-icons/fi";
 import { getApiErrorMessage } from "@/shared/lib/apiErrors";
+import { ButtonBookmark } from "@/shared/ui/buttons/ButtonBookmark";
 import { notifyError, notifySuccess } from "@/shared/ui/toasts/notify";
 import {
   TICKET_STATUSES,
@@ -57,6 +58,7 @@ const decodeDragPayload = (value: string): DragPayload | null => {
 };
 
 export function TicketKanban({ kanban, isFetching = false }: TicketKanbanProps) {
+  const router = useRouter();
   const [updateTicketStatus] = useUpdateTicketStatusMutation();
   const [draggedTicketId, setDraggedTicketId] = useState<string | null>(null);
   const [activeDropStatus, setActiveDropStatus] = useState<TicketStatus | null>(null);
@@ -184,6 +186,7 @@ export function TicketKanban({ kanban, isFetching = false }: TicketKanbanProps) 
                         void moveTicket(ticket.id, nextStatus);
                       }
                     }}
+                    onView={() => router.push(`/tickets/${ticket.id}`)}
                   />
                 ))
               )}
@@ -202,6 +205,7 @@ type KanbanTicketCardProps = {
   onDragStart: (event: DragEvent<HTMLElement>) => void;
   onDragEnd: () => void;
   onMove: (status: TicketStatus) => void;
+  onView: () => void;
 };
 
 function KanbanTicketCard({
@@ -211,6 +215,7 @@ function KanbanTicketCard({
   onDragStart,
   onDragEnd,
   onMove,
+  onView,
 }: KanbanTicketCardProps) {
   const isMoving = movingTicketId === ticket.id;
   const isDragging = draggedTicketId === ticket.id;
@@ -241,14 +246,16 @@ function KanbanTicketCard({
         <span className="text-xs font-bold text-gray-400">
           {formatTicketDate(ticket.createdAt)}
         </span>
-        <Link
-          href={`/tickets/${ticket.id}`}
-          prefetch={false}
-          className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 text-xs font-extrabold text-[#155dfc] transition hover:border-[#155dfc]"
-        >
-          Ver
-          <FiExternalLink />
-        </Link>
+        <ButtonBookmark
+          type="button"
+          text="Ver"
+          icon={FiExternalLink}
+          variant="secondary"
+          width="w-[92px]"
+          widthText="w-[42px]"
+          widthHoverDinamic="group-hover:w-[84px]"
+          onClick={onView}
+        />
       </div>
 
       <div className="mt-4">

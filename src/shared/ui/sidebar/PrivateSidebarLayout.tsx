@@ -65,7 +65,7 @@ const getInitials = (fullName: string) => {
 export function PrivateSidebarLayout({ children }: PrivateSidebarLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const { user, clearAuthCredentials } = useAuth();
   const { logOut, isLoading } = useLogOut();
 

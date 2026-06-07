@@ -113,7 +113,7 @@ export interface AddTicketCommentRequest {
   content: string;
 }
 
-export interface ExportTicketsCsvResponse {
-  csv: string;
+export interface ExportTicketsFileResponse {
+  downloadUrl: string;
   filename: string;
 }

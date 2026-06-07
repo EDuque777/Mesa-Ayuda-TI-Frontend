@@ -8,7 +8,7 @@ import { useApiErrorToast } from "@/shared/lib/useApiErrorToast";
 import { ButtonBookmark } from "@/shared/ui/buttons/ButtonBookmark";
 import { notifyError, notifySuccess } from "@/shared/ui/toasts/notify";
 import {
-  useExportTicketsCsvMutation,
+  useExportTicketsExcelMutation,
   useGetTicketsKanbanQuery,
   useListTicketsQuery,
 } from "../api/ticketsApi";
@@ -42,8 +42,8 @@ export function TicketsPage() {
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<TicketFilters>(INITIAL_FILTERS);
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [exportTicketsCsv, { isLoading: isExporting }] =
-    useExportTicketsCsvMutation();
+  const [exportTicketsExcel, { isLoading: isExporting, reset: resetExport }] =
+    useExportTicketsExcelMutation();
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -113,22 +113,19 @@ export function TicketsPage() {
 
   const handleExport = async () => {
     try {
-      const result = await exportTicketsCsv(queryFilters).unwrap();
-      const blob = new Blob([result.csv], {
-        type: "text/csv;charset=utf-8",
-      });
-      const url = window.URL.createObjectURL(blob);
+      const result = await exportTicketsExcel(queryFilters).unwrap();
       const link = document.createElement("a");
 
-      link.href = url;
-      link.download = result.filename || "tickets.csv";
+      link.href = result.downloadUrl;
+      link.download = result.filename || "tickets.xlsx";
       document.body.appendChild(link);
       link.click();
       link.remove();
-      window.URL.revokeObjectURL(url);
-      notifySuccess("El archivo CSV se generó con los filtros actuales.", "CSV descargado");
+      window.URL.revokeObjectURL(result.downloadUrl);
+      resetExport();
+      notifySuccess("El archivo Excel se generó con los filtros actuales.", "Excel descargado");
     } catch (error) {
-      notifyError(getApiErrorMessage(error), "No se pudo exportar CSV");
+      notifyError(getApiErrorMessage(error), "No se pudo exportar Excel");
     }
   };
 
@@ -158,11 +155,11 @@ export function TicketsPage() {
             onClick={handleExport}
             disabled={isExporting}
             isLoading={isExporting}
-            text={isExporting ? "Exportando" : "Exportar CSV"}
+            text={isExporting ? "Exportando" : "Exportar Excel"}
             icon={FiDownload}
             variant="secondary"
-            width="w-48"
-            widthText="w-[122px]"
+            width="w-52"
+            widthText="w-[136px]"
             widthHoverDinamic="group-hover:w-[92%]"
           />
           <ButtonBookmark

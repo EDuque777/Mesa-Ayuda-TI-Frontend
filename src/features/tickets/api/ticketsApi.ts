@@ -3,7 +3,7 @@ import {
   TICKET_STATUSES,
   type AddTicketCommentRequest,
   type CreateTicketRequest,
-  type ExportTicketsCsvResponse,
+  type ExportTicketsFileResponse,
   type Ticket,
   type TicketComment,
   type TicketDetail,
@@ -50,12 +50,12 @@ const normalizeKanbanResponse = (
 
 const getExportFilename = (headerValue: string | null) => {
   if (!headerValue) {
-    return "tickets.csv";
+    return "tickets.xlsx";
   }
 
   const match = headerValue.match(/filename="?([^";]+)"?/i);
 
-  return match?.[1] ?? "tickets.csv";
+  return match?.[1] ?? "tickets.xlsx";
 };
 
 export const ticketsApi = baseApi.injectEndpoints({
@@ -99,16 +99,19 @@ export const ticketsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Metrics"],
     }),
-    exportTicketsCsv: builder.mutation<ExportTicketsCsvResponse, TicketExportQuery | void>({
+    exportTicketsExcel: builder.mutation<ExportTicketsFileResponse, TicketExportQuery | void>({
       query: (query) => ({
-        url: "/tickets/export.csv",
+        url: "/tickets/export.xlsx",
         method: "GET",
         params: cleanParams(query),
-        responseHandler: "text",
-      }),
-      transformResponse: (csv: string, meta) => ({
-        csv,
-        filename: getExportFilename(meta?.response?.headers.get("content-disposition") ?? null),
+        responseHandler: async (response) => {
+          const file = await response.blob();
+
+          return {
+            downloadUrl: URL.createObjectURL(file),
+            filename: getExportFilename(response.headers.get("content-disposition")),
+          };
+        },
       }),
     }),
     getTicket: builder.query<TicketDetail, string>({
@@ -183,7 +186,7 @@ export const ticketsApi = baseApi.injectEndpoints({
 export const {
   useAddTicketCommentMutation,
   useCreateTicketMutation,
-  useExportTicketsCsvMutation,
+  useExportTicketsExcelMutation,
   useGetTicketMetricsQuery,
   useGetTicketQuery,
   useGetTicketsKanbanQuery,

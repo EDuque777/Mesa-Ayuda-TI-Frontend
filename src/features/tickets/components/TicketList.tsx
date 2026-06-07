@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FiChevronLeft, FiChevronRight, FiExternalLink } from "react-icons/fi";
+import { ButtonBookmark } from "@/shared/ui/buttons/ButtonBookmark";
 import { formatTicketDate } from "../lib/ticketFormatters";
 import type { Ticket, TicketListMeta } from "../types/ticket.types";
 import {
@@ -24,6 +25,8 @@ export function TicketList({
   isFetching = false,
   onPageChange,
 }: TicketListProps) {
+  const router = useRouter();
+
   if (!isFetching && tickets.length === 0) {
     return (
       <TicketStatePanel
@@ -96,14 +99,18 @@ export function TicketList({
                       {formatTicketDate(ticket.createdAt)}
                     </td>
                     <td className="px-5 py-4 text-right">
-                      <Link
-                        href={`/tickets/${ticket.id}`}
-                        prefetch={false}
-                        className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-blue-100 bg-white px-3 text-sm font-extrabold text-[#155dfc] transition hover:border-[#155dfc] hover:bg-blue-50"
-                      >
-                        Ver
-                        <FiExternalLink />
-                      </Link>
+                      <div className="inline-flex justify-end">
+                        <ButtonBookmark
+                          type="button"
+                          text="Ver"
+                          icon={FiExternalLink}
+                          variant="secondary"
+                          width="w-[92px]"
+                          widthText="w-[42px]"
+                          widthHoverDinamic="group-hover:w-[84px]"
+                          onClick={() => router.push(`/tickets/${ticket.id}`)}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -136,14 +143,16 @@ export function TicketList({
                   <span className="text-xs font-bold text-gray-400">
                     {formatTicketDate(ticket.createdAt)}
                   </span>
-                  <Link
-                    href={`/tickets/${ticket.id}`}
-                    prefetch={false}
-                    className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#155dfc] px-3 text-sm font-extrabold text-white"
-                  >
-                    Ver
-                    <FiExternalLink />
-                  </Link>
+                  <ButtonBookmark
+                    type="button"
+                    text="Ver"
+                    icon={FiExternalLink}
+                    variant="secondary"
+                    width="w-[92px]"
+                    widthText="w-[42px]"
+                    widthHoverDinamic="group-hover:w-[84px]"
+                    onClick={() => router.push(`/tickets/${ticket.id}`)}
+                  />
                 </div>
               </article>
             ))}
