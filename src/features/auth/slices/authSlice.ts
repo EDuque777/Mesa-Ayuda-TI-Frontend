@@ -36,6 +36,10 @@ const authSlice = createSlice({
 export const { setCredentials, clearCredentials } = authSlice.actions;
 
 export const selectCurrentUser = (state: RootState) => state.auth.user;
+export const selectCurrentUserRole = (state: RootState) =>
+  state.auth.user?.role ?? "USER";
+export const selectIsSuperAdmin = (state: RootState) =>
+  state.auth.user?.role === "SUPER_ADMIN";
 export const selectAccessToken = (state: RootState) => state.auth.accessToken;
 export const selectIsAuthenticated = (state: RootState) =>
   state.auth.isAuthenticated;

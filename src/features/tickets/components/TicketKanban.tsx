@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, type DragEvent } from "react";
 import { FiArrowRight, FiExternalLink } from "react-icons/fi";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getApiErrorMessage } from "@/shared/lib/apiErrors";
 import { ButtonBookmark } from "@/shared/ui/buttons/ButtonBookmark";
 import { notifyError, notifySuccess } from "@/shared/ui/toasts/notify";
@@ -59,6 +60,7 @@ const decodeDragPayload = (value: string): DragPayload | null => {
 
 export function TicketKanban({ kanban, isFetching = false }: TicketKanbanProps) {
   const router = useRouter();
+  const { isSuperAdmin } = useAuth();
   const [updateTicketStatus] = useUpdateTicketStatusMutation();
   const [draggedTicketId, setDraggedTicketId] = useState<string | null>(null);
   const [activeDropStatus, setActiveDropStatus] = useState<TicketStatus | null>(null);
@@ -69,6 +71,14 @@ export function TicketKanban({ kanban, isFetching = false }: TicketKanbanProps) 
   );
 
   const moveTicket = async (ticketId: string, status: TicketStatus) => {
+    if (!isSuperAdmin) {
+      notifyError(
+        "Solo los superadministradores pueden actualizar tickets.",
+        "Acción no permitida",
+      );
+      return;
+    }
+
     setMovingTicketId(ticketId);
 
     try {
@@ -93,6 +103,11 @@ export function TicketKanban({ kanban, isFetching = false }: TicketKanbanProps) 
   ) => {
     event.preventDefault();
     setActiveDropStatus(null);
+
+    if (!isSuperAdmin) {
+      return;
+    }
+
     const payload = decodeDragPayload(event.dataTransfer.getData("application/json"));
 
     if (!payload || payload.fromStatus === status) {
@@ -120,14 +135,24 @@ export function TicketKanban({ kanban, isFetching = false }: TicketKanbanProps) 
         return (
           <div
             key={status}
-            onDragOver={(event) => {
-              event.preventDefault();
-              setActiveDropStatus(status);
-            }}
-            onDragLeave={() => setActiveDropStatus(null)}
-            onDrop={(event) => {
-              void handleDrop(event, status);
-            }}
+            onDragOver={
+              isSuperAdmin
+                ? (event) => {
+                    event.preventDefault();
+                    setActiveDropStatus(status);
+                  }
+                : undefined
+            }
+            onDragLeave={
+              isSuperAdmin ? () => setActiveDropStatus(null) : undefined
+            }
+            onDrop={
+              isSuperAdmin
+                ? (event) => {
+                    void handleDrop(event, status);
+                  }
+                : undefined
+            }
             className={`flex min-h-[28rem] flex-col rounded-lg border bg-white shadow-sm transition ${
               isActiveDrop
                 ? "border-[#155dfc] ring-4 ring-blue-100"
@@ -157,7 +182,9 @@ export function TicketKanban({ kanban, isFetching = false }: TicketKanbanProps) 
                 ))
               ) : tickets.length === 0 ? (
                 <div className="flex min-h-32 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-center text-sm font-bold text-gray-400">
-                  Arrastra un ticket aquí o usa los botones de movimiento.
+                  {isSuperAdmin
+                    ? "Arrastra un ticket aquí o usa los botones de movimiento."
+                    : "No hay tickets en esta columna."}
                 </div>
               ) : (
                 tickets.map((ticket) => (
@@ -167,6 +194,11 @@ export function TicketKanban({ kanban, isFetching = false }: TicketKanbanProps) 
                     movingTicketId={movingTicketId}
                     draggedTicketId={draggedTicketId}
                     onDragStart={(event) => {
+                      if (!isSuperAdmin) {
+                        event.preventDefault();
+                        return;
+                      }
+
                       setDraggedTicketId(ticket.id);
                       event.dataTransfer.effectAllowed = "move";
                       event.dataTransfer.setData(
@@ -187,6 +219,7 @@ export function TicketKanban({ kanban, isFetching = false }: TicketKanbanProps) 
                       }
                     }}
                     onView={() => router.push(`/tickets/${ticket.id}`)}
+                    canMove={isSuperAdmin}
                   />
                 ))
               )}
@@ -206,6 +239,7 @@ type KanbanTicketCardProps = {
   onDragEnd: () => void;
   onMove: (status: TicketStatus) => void;
   onView: () => void;
+  canMove: boolean;
 };
 
 function KanbanTicketCard({
@@ -216,13 +250,14 @@ function KanbanTicketCard({
   onDragEnd,
   onMove,
   onView,
+  canMove,
 }: KanbanTicketCardProps) {
   const isMoving = movingTicketId === ticket.id;
   const isDragging = draggedTicketId === ticket.id;
 
   return (
     <article
-      draggable={!isMoving}
+      draggable={canMove && !isMoving}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       className={`rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition ${
@@ -258,25 +293,27 @@ function KanbanTicketCard({
         />
       </div>
 
-      <div className="mt-4">
-        <p className="text-xs font-extrabold uppercase text-gray-400">
-          Mover a
-        </p>
-        <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
-          {TICKET_STATUSES.map((status) => (
-            <button
-              key={status}
-              type="button"
-              disabled={status === ticket.status || isMoving}
-              onClick={() => onMove(status)}
-              className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2 text-xs font-extrabold text-gray-600 transition hover:border-[#155dfc] hover:text-[#155dfc] disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
-            >
-              <FiArrowRight />
-              {TICKET_STATUS_LABELS[status]}
-            </button>
-          ))}
+      {canMove ? (
+        <div className="mt-4">
+          <p className="text-xs font-extrabold uppercase text-gray-400">
+            Mover a
+          </p>
+          <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
+            {TICKET_STATUSES.map((status) => (
+              <button
+                key={status}
+                type="button"
+                disabled={status === ticket.status || isMoving}
+                onClick={() => onMove(status)}
+                className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2 text-xs font-extrabold text-gray-600 transition hover:border-[#155dfc] hover:text-[#155dfc] disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+              >
+                <FiArrowRight />
+                {TICKET_STATUS_LABELS[status]}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </article>
   );
 }

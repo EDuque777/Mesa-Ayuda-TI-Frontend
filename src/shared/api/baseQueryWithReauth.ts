@@ -1,6 +1,10 @@
 import { fetchBaseQuery, type FetchArgs } from "@reduxjs/toolkit/query";
 import { clearCredentials, setCredentials } from "@/features/auth/slices/authSlice";
-import type { AuthSessionResponse, User } from "@/features/auth/types/auth.types";
+import {
+  USER_ROLES,
+  type AuthSessionResponse,
+  type User,
+} from "@/features/auth/types/auth.types";
 import type { RootState } from "@/store";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
@@ -61,12 +65,16 @@ const shouldSkipReauth = (args: string | FetchArgs) =>
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
+const isUserRole = (value: unknown): value is User["role"] =>
+  typeof value === "string" && USER_ROLES.includes(value as User["role"]);
+
 const isUser = (value: unknown): value is User =>
   isRecord(value) &&
   typeof value.id === "string" &&
   typeof value.firstName === "string" &&
   typeof value.lastName === "string" &&
   typeof value.email === "string" &&
+  isUserRole(value.role) &&
   typeof value.isEmailVerified === "boolean";
 
 const isAuthSessionResponse = (value: unknown): value is AuthSessionResponse =>

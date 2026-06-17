@@ -3,6 +3,7 @@
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiDownload, FiGrid, FiList, FiPlusCircle, FiRefreshCcw } from "react-icons/fi";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getApiErrorMessage } from "@/shared/lib/apiErrors";
 import { useApiErrorToast } from "@/shared/lib/useApiErrorToast";
 import { ButtonBookmark } from "@/shared/ui/buttons/ButtonBookmark";
@@ -38,6 +39,7 @@ const INITIAL_FILTERS: TicketFilters = {
 
 export function TicketsPage() {
   const router = useRouter();
+  const { isSuperAdmin } = useAuth();
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<TicketFilters>(INITIAL_FILTERS);
@@ -147,7 +149,11 @@ export function TicketsPage() {
   return (
     <TicketPageShell
       title="Tickets"
-      description="Consulta, filtra y mueve solicitudes de soporte entre Nuevo, En proceso y Resuelto."
+      description={
+        isSuperAdmin
+          ? "Consulta, filtra y mueve solicitudes de soporte entre Nuevo, En proceso y Resuelto."
+          : "Consulta y filtra tus solicitudes de soporte entre Nuevo, En proceso y Resuelto."
+      }
       actions={
         <>
           <ButtonBookmark

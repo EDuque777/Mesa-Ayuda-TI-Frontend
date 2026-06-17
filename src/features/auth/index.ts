@@ -18,7 +18,9 @@ export {
   selectAccessToken,
   selectAuthStatus,
   selectCurrentUser,
+  selectCurrentUserRole,
   selectIsAuthenticated,
+  selectIsSuperAdmin,
   setCredentials,
 } from "./slices/authSlice";
 export * from "./types/auth.types";

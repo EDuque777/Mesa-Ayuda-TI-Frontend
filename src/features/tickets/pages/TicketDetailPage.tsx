@@ -13,6 +13,7 @@ import {
   FiSend,
   FiX,
 } from "react-icons/fi";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getApiErrorMessage } from "@/shared/lib/apiErrors";
 import { useApiErrorToast } from "@/shared/lib/useApiErrorToast";
 import { ButtonBookmark } from "@/shared/ui/buttons/ButtonBookmark";
@@ -73,6 +74,7 @@ const emptyForm: CreateTicketRequest = {
 };
 
 export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
+  const { isSuperAdmin } = useAuth();
   const {
     data: ticket,
     error: ticketError,
@@ -106,6 +108,8 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
   const visibleComments = comments ?? ticket?.comments ?? [];
   const visibleHistory = history ?? ticket?.history ?? [];
   const isBusy = isUpdatingTicket || isUpdatingStatus || isAddingComment;
+  const cannotUpdateTicketMessage =
+    "Solo los superadministradores pueden actualizar tickets.";
 
   const changedFields = useMemo(() => {
     if (!ticket) {
@@ -137,6 +141,13 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 
   const handleSaveTicket = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!isSuperAdmin) {
+      notifyError(cannotUpdateTicketMessage, "Acción no permitida");
+      setIsEditing(false);
+      return;
+    }
+
     const validationMessage = validateTicketForm(
       editForm.subject,
       editForm.description,
@@ -166,6 +177,11 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
   };
 
   const openEditMode = (currentTicket: Ticket) => {
+    if (!isSuperAdmin) {
+      notifyError(cannotUpdateTicketMessage, "Acción no permitida");
+      return;
+    }
+
     setEditForm({
       subject: currentTicket.subject,
       description: currentTicket.description,
@@ -181,6 +197,11 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
   };
 
   const handleStatusChange = async (status: TicketStatus) => {
+    if (!isSuperAdmin) {
+      notifyError(cannotUpdateTicketMessage, "Acción no permitida");
+      return;
+    }
+
     if (!ticket || status === ticket.status) {
       return;
     }
@@ -281,7 +302,11 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
   return (
     <TicketPageShell
       title="Detalle de ticket"
-      description="Edita datos, cambia estado, agrega comentarios y revisa el historial operativo."
+      description={
+        isSuperAdmin
+          ? "Edita datos, cambia estado, agrega comentarios y revisa el historial operativo."
+          : "Consulta datos, agrega comentarios y revisa el historial operativo."
+      }
       actions={<BackToTicketsLink />}
     >
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.42fr)_minmax(360px,0.58fr)]">
@@ -302,27 +327,29 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
                   {formatTicketDateTime(ticket.updatedAt)}
                 </p>
               </div>
-              <ButtonBookmark
-                type="button"
-                onClick={() => {
-                  if (isEditing) {
-                    closeEditMode();
-                    return;
-                  }
+              {isSuperAdmin ? (
+                <ButtonBookmark
+                  type="button"
+                  onClick={() => {
+                    if (isEditing) {
+                      closeEditMode();
+                      return;
+                    }
 
-                  openEditMode(ticket);
-                }}
-                disabled={isBusy}
-                text={isEditing ? "Cancelar" : "Editar datos"}
-                icon={isEditing ? FiX : FiEdit3}
-                variant="secondary"
-                width="w-full sm:w-46"
-                widthText="w-[120px]"
-                widthHoverDinamic="group-hover:w-[92%]"
-              />
+                    openEditMode(ticket);
+                  }}
+                  disabled={isBusy}
+                  text={isEditing ? "Cancelar" : "Editar datos"}
+                  icon={isEditing ? FiX : FiEdit3}
+                  variant="secondary"
+                  width="w-full sm:w-46"
+                  widthText="w-[120px]"
+                  widthHoverDinamic="group-hover:w-[92%]"
+                />
+              ) : null}
             </div>
 
-            {isEditing ? (
+            {isSuperAdmin && isEditing ? (
               <form
                 noValidate
                 onSubmit={handleSaveTicket}
@@ -417,37 +444,39 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
             )}
           </section>
 
-          <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-black text-gray-950">
-                  Cambio de estado
-                </h2>
-                <p className="mt-1 text-sm font-semibold text-gray-500">
-                  Usa los botones como alternativa accesible al Kanban.
-                </p>
+          {isSuperAdmin ? (
+            <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-lg font-black text-gray-950">
+                    Cambio de estado
+                  </h2>
+                  <p className="mt-1 text-sm font-semibold text-gray-500">
+                    Usa los botones como alternativa accesible al Kanban.
+                  </p>
+                </div>
+                {isUpdatingStatus ? (
+                  <span className="text-xs font-extrabold text-gray-400">
+                    Actualizando
+                  </span>
+                ) : null}
               </div>
-              {isUpdatingStatus ? (
-                <span className="text-xs font-extrabold text-gray-400">
-                  Actualizando
-                </span>
-              ) : null}
-            </div>
-            <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-              {TICKET_STATUSES.map((status) => (
-                <button
-                  key={status}
-                  type="button"
-                  onClick={() => handleStatusChange(status)}
-                  disabled={status === ticket.status || isUpdatingStatus}
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-extrabold text-gray-700 transition hover:border-[#155dfc] hover:text-[#155dfc] disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
-                >
-                  {status === ticket.status ? <FiCheck /> : <FiRefreshCcw />}
-                  {TICKET_STATUS_LABELS[status]}
-                </button>
-              ))}
-            </div>
-          </section>
+              <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                {TICKET_STATUSES.map((status) => (
+                  <button
+                    key={status}
+                    type="button"
+                    onClick={() => handleStatusChange(status)}
+                    disabled={status === ticket.status || isUpdatingStatus}
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-extrabold text-gray-700 transition hover:border-[#155dfc] hover:text-[#155dfc] disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+                  >
+                    {status === ticket.status ? <FiCheck /> : <FiRefreshCcw />}
+                    {TICKET_STATUS_LABELS[status]}
+                  </button>
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
             <h2 className="text-lg font-black text-gray-950">

@@ -7,7 +7,9 @@ import {
   selectAccessToken,
   selectAuthStatus,
   selectCurrentUser,
+  selectCurrentUserRole,
   selectIsAuthenticated,
+  selectIsSuperAdmin,
   setCredentials,
 } from "../slices/authSlice";
 import type { AuthSessionResponse } from "../types/auth.types";
@@ -20,6 +22,8 @@ export const useAuth = () => {
   const accessToken = useAppSelector(selectAccessToken);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const authStatus = useAppSelector(selectAuthStatus);
+  const userRole = useAppSelector(selectCurrentUserRole);
+  const isSuperAdmin = useAppSelector(selectIsSuperAdmin);
 
   const setAuthCredentials = useCallback(
     (credentials: AuthCredentials) => {
@@ -37,6 +41,8 @@ export const useAuth = () => {
     accessToken,
     isAuthenticated,
     authStatus,
+    userRole,
+    isSuperAdmin,
     setAuthCredentials,
     clearAuthCredentials,
   };
